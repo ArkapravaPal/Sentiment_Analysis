@@ -1,57 +1,43 @@
 import streamlit as st
 import pickle
-from utils import process_tweet
-# import nltk
+from utils import process_review
 from PIL import Image
 
+# values of logprior & loglikelihood generated from training corpus
 logprior = -0.0039000049432615924
 with open('loglikelihood.pickle', 'rb') as handle:
     loglikelihood = pickle.load(handle)
 
-def naive_bayes_predict(tweet, logprior, loglikelihood):
+def nb_predict(review, logprior, loglikelihood):
     '''
     Input:
-        tweet: a string
+        review: a string
         logprior: a number
         loglikelihood: a dictionary of words mapping to numbers
     Output:
-        p: the sum of all the logliklihoods of each word in the tweet (if found in the dictionary) + logprior (a number)
+        p: the sum of all the logliklihoods of each word in the review (if found in the dictionary) + logprior
 
     '''
-    ### START CODE HERE ###
-    # process the tweet to get a list of words
-    word_l = process_tweet(tweet)
+    
+    # process the review to get a list of words
+    word_l = process_review(review)
 
-    # initialize probability to zero
     p = 0
-
-    # add the logprior
     p += logprior
 
     for word in word_l:
-
         # check if the word exists in the loglikelihood dictionary
         if word in loglikelihood:
-            # add the log likelihood of that word to the probability
+            # add the log likelihood of that word 
             p += loglikelihood[word]
 
-    ### END CODE HERE ###
+    
     if p>0:
         return "Positive"
     else:
         return "Negative"
 
-# def predict_on_ip(usr_ip):
-# 	usr_ip = text_cleaner(usr_ip)
-# 	review_vec = count_vect.transform([usr_ip])
-# 	result = {1:"Positive",0:"Negative"}
-# 	return result[model.predict(review_vec)[0]]
-
-
-# model = joblib.load("trained_model.pkl")
-# count_vect = joblib.load("vectors.pkl")
-
-
+########################################## streamlit work #########################################
 
 nav= st.sidebar.radio("Navigations",["Home","Data","Model","Code","Contact Us"],index=0)
 
@@ -68,7 +54,7 @@ if nav == "Home":
 	def predict():
 		if len(user_input) == 0:
 			return st.error("Please enter a valid review")
-		prediction = naive_bayes_predict(user_input, logprior, loglikelihood)
+		prediction = nb_predict(user_input, logprior, loglikelihood)
 		st.write("Your review's sentiment is : ",prediction)
 		return
 	if st.button("Predict"):

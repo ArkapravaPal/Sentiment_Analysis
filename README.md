@@ -1,2 +1,2 @@
-# Sentiment_Analysis
+# Sentiment-Analysis
 Movie Review Sentiment Prediction

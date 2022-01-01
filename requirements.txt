@@ -1,0 +1,6 @@
+streamlit
+Pillow==8.0.1
+pandas
+numpy
+nltk
+matplotlib
